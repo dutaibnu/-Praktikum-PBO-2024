@@ -4,7 +4,7 @@ import java.util.*;
 public class Main {
     private static InputStreamReader p = new InputStreamReader(System.in);
     private static BufferedReader input = new BufferedReader(p);
-    private static ArrayList<Thrift> DataThrift = new ArrayList<>();
+    private static ArrayList<ThriftItem> DataThrift = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         while (true) {
@@ -45,40 +45,65 @@ public class Main {
         String lanjut;
         do {
             System.out.println("\nTambah Data");
-            String jenis = "", ukuran = "", kategori = "";
-            
-            while(jenis.trim().isEmpty()) {
+            System.out.println("Pilih jenis item:");
+            System.out.println("1. Pakaian");
+            System.out.println("2. Aksesoris");
+            System.out.print("Pilihan Anda >>> ");
+            int jenisItem = Integer.parseInt(input.readLine());
+    
+            String jenis = "", ukuran = "", kategori = "", material = "", color = "";
+    
+            while (jenis.trim().isEmpty()) {
                 System.out.print("Masukkan jenis >>> ");
                 jenis = input.readLine();
-                if(jenis.trim().isEmpty()) {
+                if (jenis.trim().isEmpty()) {
                     System.out.println("Jenis tidak boleh kosong.");
                 }
             }
     
-            while(ukuran.trim().isEmpty()) {
+            while (ukuran.trim().isEmpty()) {
                 System.out.print("Masukkan ukuran >>> ");
                 ukuran = input.readLine();
-                if(ukuran.trim().isEmpty()) {
+                if (ukuran.trim().isEmpty()) {
                     System.out.println("Ukuran tidak boleh kosong.");
                 }
             }
     
-            while(kategori.trim().isEmpty()) {
+            while (kategori.trim().isEmpty()) {
                 System.out.print("Masukkan kategori >>> ");
                 kategori = input.readLine();
-                if(kategori.trim().isEmpty()) {
+                if (kategori.trim().isEmpty()) {
                     System.out.println("Kategori tidak boleh kosong.");
                 }
             }
     
-            Thrift trf = new Thrift(jenis, ukuran, kategori);
-            DataThrift.add(trf);
+            ThriftItem item = null;
+            switch (jenisItem) {
+                case 1:
+                    System.out.print("Masukkan material >>> ");
+                    material = input.readLine();
+                    item = new Clothing(jenis, ukuran, kategori, material);
+                    break;
+                case 2:
+                    System.out.print("Masukkan warna >>> ");
+                    color = input.readLine();
+                    item = new Accessory(jenis, ukuran, kategori, color);
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+                    break;
+            }
+    
+            if (item != null) {
+                DataThrift.add(item);
+                System.out.println("Data telah ditambahkan!");
+            }
+    
             System.out.print("Tambah data lagi? (y/n) >>> ");
             lanjut = input.readLine();
         } while (lanjut.equalsIgnoreCase("y"));
-        System.out.println("Data telah ditambahkan!");
     }
-    
+        
     static void displayData() {
         if (DataThrift.isEmpty()) {
             System.out.println("Tidak ada data untuk ditampilkan.");
@@ -89,7 +114,7 @@ public class Main {
         System.out.println("-----------------------------------------------------------------");
         
         int nomor = 1;
-        for (Thrift trf : DataThrift) {
+        for (ThriftItem trf : DataThrift) {
             System.out.printf("%-3d | %-20s | %-15s | %-20s%n", nomor++, trf.getJenis(), trf.getUkuran(), trf.getKategori());
         }
     }
@@ -109,7 +134,7 @@ public class Main {
             String ukuran = input.readLine();
             System.out.print("Masukkan kategori baru >>> ");
             String kategori = input.readLine();
-            Thrift trf = new Thrift(jenis, ukuran, kategori);
+            ThriftItem trf = new ThriftItem(jenis, ukuran, kategori);
             DataThrift.set(index, trf);
             System.out.println("Data berhasil diupdate.");
         } else {
